@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="{{ url_for('static', filename='auth.js') }}" defer></script>
 </head>
 <body class="auth-body">
     <main class="auth-shell">
@@ -45,7 +46,10 @@
                             <label for="login-email">Correo electrónico</label>
                             <input id="login-email" name="correo" type="email" autocomplete="email" placeholder="tu@correo.com" required>
                             <label for="login-password">Contraseña</label>
-                            <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+                            <div class="password-field">
+                                <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+                                <button class="password-toggle" type="button" aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="login-password">👁️</button>
+                            </div>
                             <button class="button button-primary auth-submit" type="submit">Entrar a mi agenda <span>→</span></button>
                         </form>
                     {% else %}
@@ -59,7 +63,10 @@
                             <label for="register-email">Correo electrónico</label>
                             <input id="register-email" name="correo" type="email" autocomplete="email" placeholder="tu@correo.com" required>
                             <label for="register-password">Contraseña</label>
-                            <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="6" placeholder="Mínimo 6 caracteres" required>
+                            <div class="password-field">
+                                <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="6" placeholder="Mínimo 6 caracteres" required>
+                                <button class="password-toggle" type="button" aria-label="Mostrar contraseña" aria-pressed="false" aria-controls="register-password">👁️</button>
+                            </div>
                             <button class="button button-primary auth-submit" type="submit">Crear mi cuenta <span>→</span></button>
                         </form>
                     {% endif %}

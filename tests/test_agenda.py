@@ -163,6 +163,17 @@ def test_register_and_login_pages(client):
     login_page = client.get("/login")
 
     assert register_page.status_code == 200
-    assert "Crea tu cuenta" in register_page.get_data(as_text=True)
+    register_html = register_page.get_data(as_text=True)
+    assert "Crea tu cuenta" in register_html
+    assert 'aria-controls="register-password"' in register_html
     assert login_page.status_code == 200
-    assert "Inicia tu sesión" in login_page.get_data(as_text=True)
+    login_html = login_page.get_data(as_text=True)
+    assert "Inicia tu sesión" in login_html
+    assert 'aria-controls="login-password"' in login_html
+
+
+def test_password_toggle_script_is_served(client):
+    response = client.get("/static/auth.js")
+
+    assert response.status_code == 200
+    assert "Ocultar contraseña" in response.get_data(as_text=True)

@@ -638,6 +638,37 @@ tbody tr:hover { background: #fcfdff; }
     border-color: #8e96df;
     box-shadow: 0 0 0 4px var(--primary-soft);
 }
+.password-field {
+    position: relative;
+    width: 100%;
+}
+.auth-form .password-field input { padding-right: 52px; }
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 8px;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    color: #64718a;
+    background: transparent;
+    border: 0;
+    border-radius: 8px;
+    font-size: 17px;
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: background .2s ease, transform .2s ease;
+}
+.password-toggle:hover {
+    background: var(--primary-soft);
+    transform: translateY(-50%) scale(1.05);
+}
+.password-toggle:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
 .auth-submit {
     width: 100%;
     min-height: 52px;
