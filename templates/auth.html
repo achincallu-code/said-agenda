@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ "Crear cuenta" if mode == "register" else "Iniciar sesión" }} · Agenda</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="auth-body">
+    <main class="auth-shell">
+        <section class="auth-visual">
+            <div class="auth-brand"><span>📇</span> Agenda</div>
+            <div class="visual-content">
+                <span class="visual-emoji">✨</span>
+                <h1>Tu gente,<br>todo en un lugar.</h1>
+                <p>Guarda, organiza y encuentra a tus contactos fácilmente.</p>
+            </div>
+        </section>
+
+        <section class="auth-panel">
+            <div class="auth-card">
+                <div class="auth-tabs" role="tablist">
+                    <a class="{{ 'active' if mode == 'login' else '' }}" href="{{ url_for('login') }}" role="tab">Iniciar sesión</a>
+                    <a class="{{ 'active' if mode == 'register' else '' }}" href="{{ url_for('crear_cuenta') }}" role="tab">Crear cuenta</a>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="inline-alert {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                <div class="auth-form-wrap {% if mode == 'register' %}register-mode{% endif %}">
+                    {% if mode == "login" %}
+                        <div class="auth-heading">
+                            <p>Bienvenido de nuevo</p>
+                            <h2>Inicia tu sesión 👋</h2>
+                        </div>
+                        <form method="POST" action="{{ url_for('login') }}" class="auth-form">
+                            <label for="login-email">Correo electrónico</label>
+                            <input id="login-email" name="correo" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+                            <label for="login-password">Contraseña</label>
+                            <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+                            <button class="button button-primary auth-submit" type="submit">Entrar a mi agenda <span>→</span></button>
+                        </form>
+                    {% else %}
+                        <div class="auth-heading">
+                            <p>Empieza aquí</p>
+                            <h2>Crea tu cuenta 🌟</h2>
+                        </div>
+                        <form method="POST" action="{{ url_for('crear_cuenta') }}" class="auth-form">
+                            <label for="register-name">Nombre</label>
+                            <input id="register-name" name="nombre" type="text" autocomplete="name" maxlength="80" placeholder="Tu nombre" required>
+                            <label for="register-email">Correo electrónico</label>
+                            <input id="register-email" name="correo" type="email" autocomplete="email" placeholder="tu@correo.com" required>
+                            <label for="register-password">Contraseña</label>
+                            <input id="register-password" name="password" type="password" autocomplete="new-password" minlength="6" placeholder="Mínimo 6 caracteres" required>
+                            <button class="button button-primary auth-submit" type="submit">Crear mi cuenta <span>→</span></button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

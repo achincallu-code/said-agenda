@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: agenda-contactos
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    preDeployCommand: python -c "import agenda; agenda.init_db()"
+    startCommand: gunicorn agenda:app
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: AGENDA_SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false

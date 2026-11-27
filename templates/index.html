@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda personal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="{{ url_for('inicio') }}" aria-label="Ir al inicio">
+                <span class="brand-mark">📇</span>
+                <span>Agenda</span>
+            </a>
+            <nav class="nav-list" aria-label="Navegación principal">
+                <a class="nav-item active" href="{{ url_for('inicio') }}">
+                    <span class="nav-icon">👥</span>
+                    <span>Mis contactos</span>
+                    <span class="nav-count">{{ contactos|length }}</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="profile-chip">
+                    <span class="profile-avatar">{{ user.nombre[0]|upper }}</span>
+                    <span class="profile-name">{{ user.nombre }}</span>
+                </div>
+                <form method="POST" action="{{ url_for('cerrar_sesion') }}">
+                    <button class="logout-button" type="submit" title="Cerrar sesión" aria-label="Cerrar sesión">🚪</button>
+                </form>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">Agenda personal</p>
+                    <h1>Mis contactos</h1>
+                </div>
+                <button class="button button-primary" type="button" onclick="document.querySelector('#nombre').focus()">
+                    <span aria-hidden="true">➕</span> Nuevo contacto
+                </button>
+            </header>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="toast-stack" aria-live="polite">
+                        {% for category, message in messages %}
+                            <div class="toast {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="content-grid">
+                <section class="form-panel" aria-labelledby="form-title">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="section-kicker">Nuevo registro</p>
+                            <h2 id="form-title">Agregar contacto</h2>
+                        </div>
+                            <span class="heading-icon">📝</span>
+                    </div>
+                    <form method="POST" action="{{ url_for('agregar') }}" class="contact-form">
+                        <label for="nombre">Nombre <span>*</span></label>
+                        <input id="nombre" name="nombre" type="text" maxlength="80" placeholder="Ej. Ana García" required>
+
+                        <label for="telefono">Teléfono <span>*</span></label>
+                        <input id="telefono" name="telefono" type="tel" maxlength="25" placeholder="+52 55 1234 5678" required>
+
+                        <label for="correo">Correo electrónico</label>
+                        <input id="correo" name="correo" type="email" maxlength="120" placeholder="ana@ejemplo.com">
+
+                        <label for="categoria">Categoría <span>*</span></label>
+                        <select id="categoria" name="categoria" required>
+                            <option value="">Selecciona una categoría</option>
+                            {% for category in categories %}
+                                <option value="{{ category }}">{{ category }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <button class="button button-primary button-wide" type="submit">Guardar contacto</button>
+                    </form>
+                </section>
+
+                <section class="contacts-panel" aria-labelledby="contacts-title">
+                    <div class="contacts-toolbar">
+                        <div>
+                            <p class="section-kicker">Directorio</p>
+                            <h2 id="contacts-title">Lista de contactos</h2>
+                        </div>
+                        <form class="search" method="GET" action="{{ url_for('inicio') }}">
+                            <span aria-hidden="true">🔎</span>
+                            <input type="search" name="q" value="{{ search }}" placeholder="Buscar contacto" aria-label="Buscar contacto">
+                        </form>
+                    </div>
+
+                    {% if contactos %}
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Contacto</th>
+                                        <th>Teléfono</th>
+                                        <th>Correo</th>
+                                        <th>Categoría</th>
+                                        <th><span class="sr-only">Acciones</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for contacto in contactos %}
+                                        <tr>
+                                            <td>
+                                                <div class="person">
+                                                    <span class="avatar">{{ contacto.nombre[0]|upper }}</span>
+                                                    <strong>{{ contacto.nombre }}</strong>
+                                                </div>
+                                            </td>
+                                            <td>{{ contacto.telefono }}</td>
+                                            <td class="muted">{{ contacto.correo or "Sin correo" }}</td>
+                                            <td><span class="category category-{{ contacto.categoria|lower }}">{{ contacto.categoria }}</span></td>
+                                            <td>
+                                                <div class="row-actions">
+                                                    <a class="icon-button" href="{{ url_for('editar', id=contacto.id) }}" title="Editar {{ contacto.nombre }}" aria-label="Editar {{ contacto.nombre }}">✏️</a>
+                                                    <form method="POST" action="{{ url_for('eliminar', id=contacto.id) }}" onsubmit="return confirm('¿Eliminar a {{ contacto.nombre }}?')">
+                                                        <button class="icon-button delete" type="submit" title="Eliminar {{ contacto.nombre }}" aria-label="Eliminar {{ contacto.nombre }}">🗑️</button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <div class="empty-icon">🌱</div>
+                            <h3>{{ "No encontramos coincidencias" if search else "Tu agenda está lista" }}</h3>
+                            <p>{{ "Prueba con otro nombre, teléfono o categoría." if search else "Agrega tu primer contacto usando el formulario." }}</p>
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
