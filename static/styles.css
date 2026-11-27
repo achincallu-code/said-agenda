@@ -729,7 +729,14 @@ tbody tr:hover { background: #fcfdff; }
     .brand { padding: 0; }
     .brand > span:last-child { display: inline; }
     .nav-list { display: none; }
-    .sidebar-footer { display: none; }
+    .sidebar-footer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        margin-top: 0;
+        padding: 0;
+    }
     .main-content { padding: 20px 16px 32px; }
     .topbar { margin-bottom: 16px; }
     .topbar .button { min-height: 40px; padding-inline: 12px; }
